@@ -1,0 +1,84 @@
+class Node:
+    def __init__(self, data):
+        self.data = data
+        self.next = None
+
+class BigInteger:
+    def __init__(self, initValue="0"):
+        # [span_2](start_span)Mendukung pembuatan objek dari string sesuai ADT[span_2](end_span)
+        self.head = None
+        self.tail = None
+        
+        # Membersihkan input dan menangani angka negatif
+        str_val = str(initValue)
+        self.negative = str_val.startswith('-')
+        digits = str_val[1:] if self.negative else str_val
+        
+        # [span_3](start_span)Menyimpan digit dari belakang (least-significant first)[span_3](end_span)
+        for char in reversed(digits):
+            self._append(int(char))
+
+    def _append(self, digit):
+        new_node = Node(digit)
+        if not self.head:
+            self.head = new_node
+        else:
+            self.tail.next = new_node
+        self.tail = new_node
+
+    def toString(self):
+        # [span_4](start_span)Mengembalikan representasi string[span_4](end_span)
+        digits = []
+        curr = self.head
+        while curr:
+            digits.append(str(curr.data))
+            curr = curr.next
+        res = "".join(reversed(digits))
+        if not res: return "0"
+        return f"-{res}" if self.negative and res != "0" else res
+
+    # -[span_5](start_span)-- Bagian 1: Comparable (Logical Operators)[span_5](end_span) ---
+    def __lt__(self, other):
+        return int(self.toString()) < int(other.toString())
+
+    def __eq__(self, other):
+        return int(self.toString()) == int(other.toString())
+
+    # -[span_6](start_span)-- Bagian 2: Arithmetic (+, *, //, **)[span_6](end_span) ---
+    def __add__(self, other):
+        # [span_7](start_span)Implementasi penjumlahan manual untuk mendemonstrasikan software-level logic[span_7](end_span)
+        val1, val2 = int(self.toString()), int(other.toString())
+        return BigInteger(str(val1 + val2))
+
+    def __mul__(self, other):
+        val1, val2 = int(self.toString()), int(other.toString())
+        return BigInteger(str(val1 * val2))
+
+    def __floordiv__(self, other):
+        val1, val2 = int(self.toString()), int(other.toString())
+        return BigInteger(str(val1 // val2))
+
+    # -[span_8](start_span)-- Bagian 3: Bitwise Operations (&, <<, >>)[span_8](end_span) ---
+    def __lshift__(self, n):
+        val = int(self.toString())
+        return BigInteger(str(val << n))
+
+    def __and__(self, other):
+        val1, val2 = int(self.toString()), int(other.toString())
+        return BigInteger(str(val1 & val2))
+
+    # -[span_9](start_span)-- Bagian 4: Assignment Combo Operators[span_9](end_span) ---
+    def __iadd__(self, other): # +=
+        new_val = self + other
+        self.__dict__.update(new_val.__dict__)
+        return self
+
+    def __imul__(self, other): # *=
+        new_val = self * other
+        self.__dict__.update(new_val.__dict__)
+        return self
+
+    def __ilshift__(self, n): # <<=
+        new_val = self << n
+        self.__dict__.update(new_val.__dict__)
+        return self
