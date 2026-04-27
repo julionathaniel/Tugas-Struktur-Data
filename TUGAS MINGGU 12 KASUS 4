@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kasus 4: BFS (Breadth-First Search)</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #e0e0e0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .slide {
+            background-color: #f4f4f4;
+            padding: 40px;
+            width: 100%;
+            max-width: 950px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            border-radius: 8px;
+        }
+
+        h1 { color: #2c3e50; margin-bottom: 5px; }
+        .subtitle { color: #555; margin-bottom: 30px; font-weight: 500; font-style: italic; }
+
+        .content-wrapper {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .box {
+            flex: 1;
+            padding: 20px;
+            background-color: #ffffff;
+            border-left: 5px solid #3498db;
+            min-width: 300px;
+        }
+
+        .box h2 {
+            margin-top: 0;
+            color: #3498db;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        ul { line-height: 1.8; color: #333; padding-left: 20px; }
+        li { margin-bottom: 8px; }
+
+        .code-box {
+            flex: 1;
+            background-color: #1e1e1e;
+            color: #dcdcdc;
+            padding: 20px;
+            border-radius: 5px;
+            font-family: 'Consolas', 'Courier New', monospace;
+            white-space: pre;
+            overflow-x: auto;
+            min-width: 300px;
+            font-size: 0.9em;
+        }
+
+        .footer-note {
+            background-color: #d1d8e0;
+            padding: 20px;
+            border-left: 5px solid #3498db;
+            color: #2c3e50;
+            font-size: 0.95em;
+        }
+    </style>
+</head>
+<body>
+
+<div class="slide">
+    <h1>Kasus 4: BFS (Breadth-First Search)</h1>
+    <div class="subtitle">Pencarian jalur terpendek pada graf menggunakan queue</div>
+
+    <div class="content-wrapper">
+        <div class="box">
+            <h2>Algoritma BFS</h2>
+            <ul>
+                <li>Mulai dari node awal, enqueue</li>
+                <li>Selama queue tidak kosong:
+                    <ul>
+                        <li>dequeue node terdepan</li>
+                        <li>Proses node tersebut</li>
+                        <li>enqueue semua tetangga yang belum dikunjungi</li>
+                    </ul>
+                </li>
+                <li>Menjamin jalur terpendek (graf tanpa bobot)</li>
+                <li>Queue memastikan level demi level</li>
+            </ul>
+        </div>
+
+        <div class="code-box">
+bfs.py
+def bfs(graph, start):
+    visited = set()
+    queue = Queue()
+    queue.enqueue(start)
+    visited.add(start)
+
+    while not queue.isEmpty():
+        node = queue.dequeue()
+        print(node) # proses
+
+        for neighbor in graph[node]:
+            if neighbor not in visited:
+                visited.add(neighbor)
+                queue.enqueue(neighbor)</div>
+    </div>
+
+    <div class="footer-note">
+        BFS menjelajahi graf LEVEL demi LEVEL — persis karena sifat FIFO queue. Node yang ditemukan duluan (level dekat) diproses duluan sebelum node yang lebih jauh.
+    </div>
+</div>
+
+</body>
+</html>
