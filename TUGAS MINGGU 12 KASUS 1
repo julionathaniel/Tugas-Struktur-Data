@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kasus 1: Antrian Printer Bersama</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #e0e0e0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+
+        .slide {
+            background-color: #f4f4f4;
+            padding: 40px;
+            width: 80%;
+            max-width: 900px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        h1 { color: #333; margin-bottom: 5px; }
+        p { color: #555; margin-bottom: 30px; font-style: italic; }
+
+        .container {
+            display: flex;
+            gap: 20px;
+        }
+
+        .box {
+            flex: 1;
+            padding: 20px;
+            background-color: #ffffff;
+            border-left: 5px solid #2196F3;
+        }
+
+        .box h2 {
+            margin-top: 0;
+            color: #2196F3;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        ul { line-height: 1.6; color: #333; }
+
+        .code-box {
+            flex: 1;
+            background-color: #1e1e1e;
+            color: #d4d4d4;
+            padding: 20px;
+            border-radius: 5px;
+            font-family: 'Courier New', Courier, monospace;
+            white-space: pre;
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body>
+
+<div class="slide">
+    <h1>Kasus 1: Antrian Printer Bersama</h1>
+    <p>Dokumen dicetak sesuai urutan kedatangan</p>
+
+    <div class="container">
+        <div class="box">
+            <h2>Skenario</h2>
+            <ul>
+                <li>Banyak user mengirim dokumen ke 1 printer</li>
+                <li>Printer hanya bisa cetak 1 dokumen pada satu waktu</li>
+                <li>Dokumen yang datang duluan, dicetak duluan (FIFO)</li>
+                <li><strong>enqueue():</strong> user mengirim dokumen baru</li>
+                <li><strong>dequeue():</strong> printer mulai cetak dokumen berikutnya</li>
+            </ul>
+        </div>
+
+        <div class="code-box">
+printer_queue = Queue()
+
+# User mengirim dokumen
+printer_queue.enqueue("laporan.pdf")
+printer_queue.enqueue("tugas.docx")
+printer_queue.enqueue("foto.jpg")
+
+# Printer memproses
+while not printer_queue.isEmpty():
+    doc = printer_queue.dequeue()
+    print(f"Mencetak: {doc}")
+
+# Output:
+# Mencetak: laporan.pdf
+# Mencetak: tugas.docx
+# Mencetak: foto.jpg
+        </div>
+    </div>
+</div>
+
+</body>
+</html>
