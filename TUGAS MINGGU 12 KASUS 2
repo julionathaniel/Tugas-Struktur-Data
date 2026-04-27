@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kasus 2: Permainan Hot Potato</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #e0e0e0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .slide {
+            background-color: #f4f4f4;
+            padding: 40px;
+            width: 100%;
+            max-width: 900px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            border-radius: 8px;
+        }
+
+        h1 { color: #2c3e50; margin-bottom: 5px; }
+        .subtitle { color: #555; margin-bottom: 30px; font-weight: 500; }
+
+        .content-wrapper {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .box {
+            flex: 1;
+            padding: 20px;
+            background-color: #ffffff;
+            border-left: 5px solid #2a9d8f;
+            min-width: 300px;
+        }
+
+        .box h2 {
+            margin-top: 0;
+            color: #2a9d8f;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        ul { line-height: 1.8; color: #333; padding-left: 20px; }
+
+        .code-box {
+            flex: 1;
+            background-color: #1e1e1e;
+            color: #a6e22e;
+            padding: 20px;
+            border-radius: 5px;
+            font-family: 'Courier New', Courier, monospace;
+            white-space: pre;
+            overflow-x: auto;
+            min-width: 300px;
+        }
+
+        .footer-note {
+            background-color: #d1d8e0;
+            padding: 20px;
+            border-left: 5px solid #2a9d8f;
+            color: #2c3e50;
+            font-weight: 500;
+        }
+    </style>
+</head>
+<body>
+
+<div class="slide">
+    <h1>Kasus 2: Permainan Hot Potato</h1>
+    <div class="subtitle">Simulasi permainan menggunakan circular queue</div>
+
+    <div class="content-wrapper">
+        <div class="box">
+            <h2>🎮 Aturan Permainan</h2>
+            <ul>
+                <li>Pemain duduk melingkar, oper benda</li>
+                <li>Setelah N kali oper, pemain yang pegang tersingkir</li>
+                <li>Ulangi sampai tersisa 1 pemenang</li>
+                <li>Queue mensimulasikan lingkaran pemain</li>
+            </ul>
+        </div>
+
+        <div class="code-box">
+def hot_potato(names, num):
+    q = Queue()
+    for name in names:
+        q.enqueue(name)
+
+    while len(q) > 1:
+        for _ in range(num):
+            # Oper: dequeue depan, enqueue belakang
+            q.enqueue(q.dequeue())
+        q.dequeue() # Tersingkir!
+
+    return q.dequeue() # Pemenang!</div>
+    </div>
+
+    <div class="footer-note">
+        Teknik kunci: dequeue() lalu enqueue() kembali = simulasi oper melingkar. Setelah num kali oper, dequeue() tanpa enqueue = tersingkir.
+    </div>
+</div>
+
+</body>
+</html>
