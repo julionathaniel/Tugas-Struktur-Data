@@ -1,0 +1,78 @@
+class NoteTakingSystem:
+    def __init__(self):
+        # Head & Tail untuk view kronologis
+        self.chrono_head = None
+        self.chrono_tail = None
+        
+        # Head & Tail untuk view alfabetis
+        self.alpha_head = None
+        self.alpha_tail = None
+        
+        # Head pointers untuk setiap tag (Multi-linked)
+        self.tag_heads = {} 
+        
+        # [span_5](start_span)Circular Buffer untuk Sync Status (Recent Changes)[span_5](end_span)
+        self.sync_buffer = [None] * 5  # Ukuran buffer 5
+        self.sync_index = 0
+
+    def add_note(self, title, content, timestamp, tags=[]):
+        new_node = NoteNode(title, content, timestamp)
+        
+        # 1. [span_6](start_span)Insert ke Chronological Chain (Insert Belakang - O(1))[span_6](end_span)
+        if not self.chrono_head:
+            self.chrono_head = self.chrono_tail = new_node
+        else:
+            new_node.prev_chrono = self.chrono_tail
+            self.chrono_tail.next_chrono = new_node
+            self.chrono_tail = new_node
+            
+        # 2. [span_7](start_span)Insert ke Alphabetical Chain (Sorted Insert - O(n))[span_7](end_span)
+        self._insert_alphabetical(new_node)
+        
+        # 3. [span_8](start_span)Insert ke Tag Chains (Multi-linked)[span_8](end_span)
+        for tag in tags:
+            if tag not in self.tag_heads:
+                self.tag_heads[tag] = new_node
+            else:
+                # Link-kan ke depan (seperti singly linked list untuk tiap tag)
+                new_node.tag_pointers[tag] = self.tag_heads[tag]
+                self.tag_heads[tag] = new_node
+        
+        # 4. Update Sync Status (Circular Tracking)
+        self.sync_buffer[self.sync_index] = f"Added: {title}"
+        self.sync_index = (self.sync_index + 1) % len(self.sync_buffer)
+
+    def _insert_alphabetical(self, newNode):
+        # [span_9](start_span)Logika Sorted Insert sesuai slide[span_9](end_span)
+        if self.alpha_head is None:
+            self.alpha_head = self.alpha_tail = newNode
+        elif newNode.title < self.alpha_head.title:
+            newNode.next_alpha = self.alpha_head
+            self.alpha_head.prev_alpha = newNode
+            self.alpha_head = newNode
+        elif newNode.title > self.alpha_tail.title:
+            newNode.prev_alpha = self.alpha_tail
+            self.alpha_tail.next_alpha = newNode
+            self.alpha_tail = newNode
+        else:
+            curr = self.alpha_head
+            while curr.title < newNode.title:
+                curr = curr.next_alpha
+            newNode.next_alpha = curr
+            newNode.prev_alpha = curr.prev_alpha
+            curr.prev_alpha.next_alpha = newNode
+            curr.prev_alpha = newNode
+
+    def display_chronological(self):
+        print("\n--- Notes (Chronological) ---")
+        curr = self.chrono_head
+        while curr:
+            print(f"[{curr.timestamp}] {curr.title}")
+            curr = curr.next_chrono
+
+    def display_by_tag(self, tag):
+        print(f"\n--- Notes with Tag: {tag} ---")
+        curr = self.tag_heads.get(tag)
+        while curr:
+            print(f"- {curr.title}")
+            curr = curr.tag_pointers.get(tag)
