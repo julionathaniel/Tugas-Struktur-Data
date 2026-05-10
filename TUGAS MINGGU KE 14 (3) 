@@ -1,0 +1,13 @@
+app = NoteTakingSystem()
+
+# Menambah catatan dengan berbagai tag
+app.add_note("Belajar Python", "Materi Linked List", "2023-10-01", ["kuliah", "coding"])
+app.add_note("Belanja", "Beli susu dan telur", "2023-10-02", ["rutinitas"])
+app.add_note("Algoritma", "Belajar Merge Sort", "2023-10-03", ["kuliah"])
+
+# Menampilkan hasil
+app.display_chronological() # Berdasarkan waktu input
+app.display_by_tag("kuliah") # Filter berdasarkan multi-link tag
+
+# Cek Sync Status (Circular Buffer)
+print("\nRecent Changes (Circular):", app.sync_buffer)
