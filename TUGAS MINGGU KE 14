@@ -1,0 +1,17 @@
+class NoteNode:
+    def __init__(self, title, content, timestamp):
+        self.title = title
+        self.content = content
+        self.timestamp = timestamp
+        
+        # Pointer untuk Chronological View (Doubly Linked)
+        self.next_chrono = None
+        self.prev_chrono = None
+        
+        # Pointer untuk Alphabetical View (Doubly Linked)
+        self.next_alpha = None
+        self.prev_alpha = None
+        
+        # Dictionary untuk menyimpan pointer berdasarkan Tag (Multi-linked)
+        # Menghubungkan note dengan note lain yang memiliki tag yang sama
+        self.tag_pointers = {} # format: { 'tag_name': next_node_with_same_tag }
