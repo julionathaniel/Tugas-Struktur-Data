@@ -1,0 +1,73 @@
+# 8 kemungkinan pergerakan kuda berdasarkan koordinat (x, y)
+move_x = [2, 1, -1, -2, -2, -1, 1, 2]
+move_y = [1, 2, 2, 1, -1, -2, -2, -1]
+
+def is_valid_move(x, y, board, n):
+    return 0 <= x < n and 0 <= y < n and board[x][y] == -1
+
+def get_degree(x, y, board, n):
+    # Menghitung berapa banyak langkah valid selanjutnya dari petak ini
+    count = 0
+    for i in range(8):
+        if is_valid_move(x + move_x[i], y + move_y[i], board, n):
+            count += 1
+    return count
+
+def solve_knights_tour(n, start_x, start_y):
+    # Inisialisasi papan catur dengan nilai -1 (belum dikunjungi)
+    board = [[-1 for _ in range(n)] for _ in range(n)]
+    
+    # Set langkah pertama
+    board[start_x][start_y] = 1
+    
+    curr_x, curr_y = start_x, start_y
+    
+    # Berjalan sebanyak (N*N - 1) langkah sisa
+    for step in range(2, n * n + 1):
+        min_deg_idx = -1
+        min_deg = 9  # Derajat maksimum yang mungkin adalah 8
+        
+        # Cari tetangga dengan derajat (pilihan langkah ke depan) terkecil
+        for i in range(8):
+            next_x = curr_x + move_x[i]
+            next_y = curr_y + move_y[i]
+            
+            if is_valid_move(next_x, next_y, board, n):
+                deg = get_degree(next_x, next_y, board, n)
+                if deg < min_deg:
+                    min_deg = deg
+                    min_deg_idx = i
+                    
+        # Jika tidak ada langkah valid tersisa sebelum semua petak terisi
+        if min_deg_idx == -1:
+            return None
+            
+        # Melangkah ke petak terpilih
+        curr_x += move_x[min_deg_idx]
+        curr_y += move_y[min_deg_idx]
+        board[curr_x][curr_y] = step
+        
+    return board
+
+# Driver Code
+def main_knights():
+    n = 8  # Standar ukuran papan catur
+    print(f"Papan Catur Standar Ukuran {n}x{n}")
+    start_x = int(input(f"Masukkan baris awal (0 hingga {n-1}): "))
+    start_y = int(input(f"Masukkan kolom awal (0 hingga {n-1}): "))
+    
+    if not (0 <= start_x < n and 0 <= start_y < n):
+        print("Posisi awal di luar batas papan!")
+        return
+        
+    result = solve_knights_tour(n, start_x, start_y)
+    
+    if result:
+        print("\nUrutan langkah Tur Kuda berhasil ditemukan:")
+        for row in result:
+            print(" ".join(f"{cell:2d}" for cell in row))
+    else:
+        print("\nSolusi tidak ditemukan dari posisi awal tersebut.")
+
+if __name__ == "__main__":
+    main_knights()
