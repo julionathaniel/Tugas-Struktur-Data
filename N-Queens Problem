@@ -1,0 +1,53 @@
+def is_safe(board, row, col, n):
+    # Periksa kolom ke atas
+    for i in range(row):
+        if board[i][col] == 'Q':
+            return False
+            
+    # Periksa diagonal kiri atas
+    for i, j in zip(range(row, -1, -1), range(col, -1, -1)):
+        if board[i][j] == 'Q':
+            return False
+            
+    # Periksa diagonal kanan atas
+    for i, j in zip(range(row, -1, -1), range(col, n)):
+        if board[i][j] == 'Q':
+            return False
+            
+    return True
+
+def solve_n_queens(board, row, n):
+    # Base case: Jika semua ratu sudah ditempatkan
+    if row >= n:
+        return True
+        
+    for col in range(n):
+        if is_safe(board, row, col, n):
+            board[row][col] = 'Q'  # Tempatkan ratu
+            
+            # Rekursi untuk menempatkan ratu di baris berikutnya
+            if solve_n_queens(board, row + 1, n):
+                return True
+                
+            board[row][col] = '.'  # Backtrack jika tidak menemukan solusi
+            
+    return False
+
+def print_board(board):
+    for row in board:
+        print(" ".join(row))
+    print()
+
+# Driver Code
+def main_queens():
+    n = int(input("Masukkan ukuran papan (N): "))
+    board = [['.' for _ in range(n)] for _ in range(n)]
+    
+    if solve_n_queens(board, 0, n):
+        print(f"\nSolusi ditemukan untuk {n}-Queens:")
+        print_board(board)
+    else:
+        print(f"\nTidak ada solusi untuk ukuran papan {n}x{n}.")
+
+if __name__ == "__main__":
+    main_queens()
