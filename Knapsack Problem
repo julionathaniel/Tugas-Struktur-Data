@@ -1,0 +1,51 @@
+def knapsack_exact_sum(weights, target, index, current_combination):
+    # Base Case 1: Jika target berhasil dicapai tepat 0
+    if target == 0:
+        return True, current_combination
+        
+    # Base Case 2: Jika target negatif atau semua opsi barang sudah habis dijalani
+    if target < 0 or index >= len(weights):
+        return False, []
+        
+    # Pilihan 1: Ambil barang ke-'index' saat ini
+    chosen_weight = weights[index]
+    success, result = knapsack_exact_sum(
+        weights, 
+        target - chosen_weight, 
+        index + 1, 
+        current_combination + [chosen_weight]
+    )
+    if success:
+        return True, result
+        
+    # Pilihan 2: Lewati barang ke-'index' saat ini (Backtrack)
+    success, result = knapsack_exact_sum(
+        weights, 
+        target, 
+        index + 1, 
+        current_combination
+    )
+    if success:
+        return True, result
+        
+    return False, []
+
+# Driver Code
+def main_knapsack():
+    # Menggunakan contoh data yang ada pada soal nomor 3
+    [span_5](start_span)item_weights = [2, 5, 6, 9, 12, 14, 20]  #[span_5](end_span)
+    [span_6](start_span)target_weight = 30  #[span_6](end_span)
+    
+    print(f"Kumpulan berat barang tersedia: {item_weights}")
+    print(f"Target berat maksimum knapsack: {target_weight}\n")
+    
+    found, solution = knapsack_exact_sum(item_weights, target_weight, 0, [])
+    
+    if found:
+        print(f"Solusi ditemukan! Kombinasi barang: {solution}")
+        print(f"Total berat: {sum(solution)} (Pas dengan target)")
+    else:
+        print("Tidak ada kombinasi barang yang tepat menghasilkan berat target.")
+
+if __name__ == "__main__":
+    main_knapsack()
