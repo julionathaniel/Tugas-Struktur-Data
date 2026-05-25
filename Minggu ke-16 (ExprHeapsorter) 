@@ -1,0 +1,115 @@
+from typing import List, Optional
+from collections import deque
+import re
+
+class ExprHeapSorter:
+    def __init__(self, expr_str: str):
+        self.expr = expr_str
+        self.values = []
+
+    def parse_and_evaluate(self) -> List[int]:
+        """Membangun pohon ekspresi, mengevaluasi, mengembalikan list nilai integer."""
+        # Ekstraksi token secara aman untuk menangani angka > 9
+        tokens_list = re.findall(r'\d+|[()+*/-]', self.expr)
+        tokens = deque(tokens_list)
+        
+        root = self._build_tree(tokens)
+        self.values = self._eval_tree(root)
+        return self.values
+
+    def _build_tree(self, tokens: deque) -> Optional[dict]:
+        if not tokens: 
+            return None
+        
+        token = tokens.popleft()
+        
+        # Pola rekursif untuk ekspresi yang terparentheses penuh
+        if token == '(':
+            left_node = self._build_tree(tokens)
+            op = tokens.popleft()
+            right_node = self._build_tree(tokens)
+            tokens.popleft() # Membuang kurung tutup ')'
+            return {'val': op, 'left': left_node, 'right': right_node}
+        else:
+            # Jika itu operand (angka)
+            return {'val': int(token), 'left': None, 'right': None}
+
+    def _eval_tree(self, node: Optional[dict]) -> List[int]:
+        # Evaluasi postorder: Kembalikan list [nilai_subtree_kiri, nilai_subtree_kanan, hasil_node]
+        if not node: 
+            return []
+            
+        # Base case (Leaf node / operand)
+        if node['left'] is None and node['right'] is None:
+            return [node['val']]
+            
+        left_vals = self._eval_tree(node['left'])
+        right_vals = self._eval_tree(node['right'])
+        
+        left_res = left_vals[-1] if left_vals else 0
+        right_res = right_vals[-1] if right_vals else 0
+        
+        op = node['val']
+        if op == '+': res = left_res + right_res
+        elif op == '-': res = left_res - right_res
+        elif op == '*': res = left_res * right_res
+        elif op == '/':
+            if right_res == 0:
+                raise ValueError("Division by zero error")
+            # Menggunakan integer division
+            res = left_res // right_res 
+            
+        return left_vals + right_vals + [res]
+
+    def heapsort_inplace(self, arr: List[int]) -> List[int]:
+        """Mengurutkan array secara ascending menggunakan in-place heapsort."""
+        n = len(arr)
+        if n <= 1: 
+            return arr
+            
+        # 1. Build max-heap in-place
+        for i in range(n // 2 - 1, -1, -1):
+            self._sift_down(arr, n, i)
+            
+        # 2. Extract & sort
+        for end in range(n - 1, 0, -1):
+            arr[0], arr[end] = arr[end], arr[0]
+            self._sift_down(arr, end, 0)
+            
+        return arr
+
+    def _sift_down(self, arr: List[int], heap_size: int, idx: int):
+        # Implementasi iteratif untuk memulihkan properti heap
+        while True:
+            largest = idx
+            left = 2 * idx + 1
+            right = 2 * idx + 2
+
+            if left < heap_size and arr[left] > arr[largest]:
+                largest = left
+            if right < heap_size and arr[right] > arr[largest]:
+                largest = right
+
+            if largest != idx:
+                # Lakukan swap jika child lebih besar dari parent
+                arr[idx], arr[largest] = arr[largest], arr[idx]
+                idx = largest
+            else:
+                break
+
+    def is_complete_tree(self, arr: List[int]) -> bool:
+        """Memvalidasi apakah array terurut memenuhi properti complete binary tree."""
+        n = len(arr)
+        for i in range(n):
+            # Memastikan tidak ada 'lubang' referensi (indeks yang terlewati/bernilai None)
+            # Karena array di Python list dialokasikan secara sekuensial, kita hanya 
+            # mengecek apakah elemen yang diakses secara struktur pohon adalah None.
+            left = 2 * i + 1
+            right = 2 * i + 2
+            
+            if left < n and arr[left] is None: 
+                return False
+            if right < n and arr[right] is None: 
+                return False
+                
+        return True
